@@ -1,0 +1,92 @@
+.model small
+.data 
+     msg db 10, 13, "INGRESE CARACTER $"
+car    DB 0
+posx    DB 0
+posy    DB 0
+xa     DB 0
+ya     DB 0
+.code 
+    mov ax,data
+    mov ds,ax
+    
+   mov  ah,02h
+   mov  bh,00h
+   mov  dh,5
+   mov  dl,5
+   int  10h
+   mov  ah,09h
+   ;mov  dx,OFFSET msg
+   lea  dx,msg
+   int  21h
+   mov  ah,01h
+   int  21h
+   mov  car,al
+   mov  ah,03h
+   mov  bh,00h
+   int  10h
+   mov  posx,ch
+   mov  posy,dh
+   dec  posx
+   mov  ah,05h
+   mov  al,01h
+   int  10h
+   
+bucle:
+   mov  ah,02h
+   mov  bh,01h
+   mov  dh,ya
+   mov  dl,xa
+   int  10h
+   mov  ah,02h
+   mov  dl,32
+   int  21h
+   mov  ah,02h
+   mov  bh,01h
+   mov  dh,posy
+   mov  dl,posx
+   int  10h
+   mov  ah,02h
+   mov  dl,car
+   int  21h
+   mov  ah,02h
+   mov  bh,01h
+   mov  dh,posy
+   mov  dl,posx
+   int  10h
+   mov  xa,dl
+   mov  ya,dh
+   mov  ah,00h
+   int  16h
+   cmp  ah,75
+   jnz  noleft
+   dec  posx
+   jmp  bucle
+   
+noleft:
+   cmp  ah,72
+   jnz  nodown
+   dec  posy
+   jmp  bucle
+nodown:
+   cmp  ah,77
+   jnz  noright
+   inc  posx
+   jmp  bucle
+noright:
+   cmp  ah,80
+   jnz  noup
+   inc  posy
+   
+   jmp  bucle
+noup:
+   cmp  al,27
+   jz   fin
+   jmp  bucle
+fin:
+   mov  ah,4ch
+   mov  al,00h
+   int  21h
+
+
+end
